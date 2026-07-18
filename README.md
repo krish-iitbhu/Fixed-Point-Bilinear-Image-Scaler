@@ -99,8 +99,11 @@ This approach:
 * Improves synthesis efficiency.
 * Maintains high interpolation accuracy for image scaling.
 
+---
 
 ### Complete Workflow
+
+```
 Input Image (.png/.jpg)
         │
         ▼
@@ -125,8 +128,7 @@ Python (HEX → Image)
         │
         ▼
 Resized Output Image (.png)
-
-
+```
 
 ### Results
 
