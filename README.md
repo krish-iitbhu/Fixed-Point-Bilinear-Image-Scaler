@@ -101,7 +101,7 @@ This approach:
 
 
 ## Complete Workflow
-
+---
 Input Image (.png/.jpg/.gif)
           │
           ▼
@@ -127,6 +127,7 @@ Python (hex_to_image.py)
           ▼
 Output Image (.png)
 
+---
 ## Results
 
 The project successfully performs hardware-based bilinear image scaling using a 4-stage pipelined architecture.
