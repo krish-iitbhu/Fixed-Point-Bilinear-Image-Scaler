@@ -100,35 +100,7 @@ This approach:
 * Maintains high interpolation accuracy for image scaling.
 
 ---
-
-### Complete Workflow
-
-```
-Input Image (.png/.jpg)
-        │
-        ▼
-Python (Image → HEX)
-        │
-        ▼
-input.hex
-        │
-        ▼
-Vivado Simulation
-($readmemh)
-        │
-        ▼
-4-Stage Pipelined Bilinear Image Scaler
-        │
-        ▼
-output.hex
-($writememh)
-        │
-        ▼
-Python (HEX → Image)
-        │
-        ▼
-Resized Output Image (.png)
-```
+https://chatgpt.com/s/m_6a5bd9efbddc8191bb356e61e95e5cc0
 
 ### Results
 
