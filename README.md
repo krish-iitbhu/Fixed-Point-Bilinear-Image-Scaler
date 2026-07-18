@@ -79,7 +79,8 @@ This computes a weighted average of the four neighboring pixels based on the fra
 
 The interpolated pixel is written into the output image memory at the corresponding output coordinate.
 
-After all output pixels have been processed, the output memory is exported as a HEX file using `$writememh()`.
+After all output pixels have been processed, the output memory is exported as a HEX file using `$writememh()`
+
 
 
 
@@ -101,7 +102,6 @@ This approach:
 
 ## Complete Workflow
 
-```
 Input Image (.png/.jpg/.gif)
           │
           ▼
@@ -127,9 +127,8 @@ Python (hex_to_image.py)
           ▼
 Output Image (.png)
 
-
-
 ## Results
 
-The project successfully performs hardware-based bilinear image scaling using a 4-stage pipelined architecture. The generated output image is reconstructed from the simulated HEX output and verified against the expected resized image.
+The project successfully performs hardware-based bilinear image scaling using a 4-stage pipelined architecture.
+The generated output image is reconstructed from the simulated HEX output and verified against the expected resized image.
 
