@@ -99,8 +99,9 @@ This approach:
 * Improves synthesis efficiency.
 * Maintains high interpolation accuracy for image scaling.
 
----
-https://chatgpt.com/s/m_6a5bd9efbddc8191bb356e61e95e5cc0
+
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/c152026f-996f-45e4-914b-05665abf4a05" />
+
 
 ### Results
 
