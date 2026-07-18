@@ -100,35 +100,35 @@ This approach:
 * Maintains high interpolation accuracy for image scaling.
 
 
-## Complete Workflow
----
-Input Image (.png/.jpg/.gif)
-          │
-          ▼
-Python (img_to_hex.py)
-          │
-          ▼
+### Complete Workflow
+Input Image (.png/.jpg)
+        │
+        ▼
+Python (Image → HEX)
+        │
+        ▼
 input.hex
-          │
-          ▼
+        │
+        ▼
 Vivado Simulation
 ($readmemh)
-          │
-          ▼
-4-Stage Bilinear Image Scaler
-          │
-          ▼
+        │
+        ▼
+4-Stage Pipelined Bilinear Image Scaler
+        │
+        ▼
 output.hex
 ($writememh)
-          │
-          ▼
-Python (hex_to_image.py)
-          │
-          ▼
-Output Image (.png)
+        │
+        ▼
+Python (HEX → Image)
+        │
+        ▼
+Resized Output Image (.png)
 
----
-## Results
+
+
+### Results
 
 The project successfully performs hardware-based bilinear image scaling using a 4-stage pipelined architecture.
 The generated output image is reconstructed from the simulated HEX output and verified against the expected resized image.
