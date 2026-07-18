@@ -7,7 +7,6 @@ This project implements a **4-stage pipelined bilinear image scaler** in **Veril
 ---
 
 ## Features
-
 * 4-stage pipelined architecture for high-throughput image scaling
 * Fixed-point bilinear interpolation (Q8 format)
 * Supports grayscale and RGB images
@@ -16,101 +15,99 @@ This project implements a **4-stage pipelined bilinear image scaler** in **Veril
 * Python utilities for image-to-HEX and HEX-to-image conversion
 * Fully verified using Xilinx Vivado Behavioral Simulation
 
----
 
 ## Pipeline Architecture
-
 The image scaler consists of four pipeline stages:
 
-1. **Coordinate Mapping** – Computes input image coordinates corresponding to each output pixel using fixed-point arithmetic.
-2. **Memory Fetch** – Fetches the four neighboring pixels (I00, I01, I10, I11) required for interpolation.
-3. **Bilinear Interpolation** – Computes the interpolated pixel using fixed-point bilinear interpolation.
-4. **Pixel Reconstruction** – Stores the computed pixel into the output image memory.
+### Stage 1: Coordinate Mapping
 
+For every output pixel ((x_{out}, y_{out})), the corresponding input image coordinates are computed using fixed-point scaling factors.
 
-# Simulation Workflow
+The scaling factors are calculated as:
 
-## Step 1: Install Python Dependencies
-
-Install the required Python libraries.
-
-```bash
-pip install pillow numpy
+```text
+scale_x = (W_IN << 8) / W_OUT
+scale_y = (H_IN << 8) / H_OUT
 ```
+
+The mapped input coordinates are then obtained as:
+
+```text
+x_in_fixed = x_out × scale_x
+y_in_fixed = y_out × scale_y
+```
+
+The integer and fractional components are extracted as:
+
+```text
+x0 = x_in_fixed >> 8
+y0 = y_in_fixed >> 8
+
+a = x_in_fixed[7:0]
+b = y_in_fixed[7:0]
+```
+
+where:
+
+* `x0`, `y0` are the integer pixel locations.
+* `a`, `b` represent the fractional distances used during interpolation.
 
 ---
 
-## Step 2: Convert Input Image to HEX
+### Stage 2: Memory Fetch
 
-Place the input image inside the Python folder and run:
+The four neighboring pixels required for bilinear interpolation are fetched from memory.
 
-```bash
-python img_to_hex.py
+```text
+I00 = (x0,     y0)
+I10 = (x0 + 1, y0)
+I01 = (x0,     y0 + 1)
+I11 = (x0 + 1, y0 + 1)
 ```
 
-This generates:
-
-```
-input.png
-      ↓
-input.hex
-```
+Boundary checking is performed to ensure memory accesses remain within the valid image dimensions.
 
 ---
 
-## Step 3: Load HEX File into Vivado
+### Stage 3: Bilinear Interpolation
 
-Copy **input.hex** into the Vivado simulation directory (or add it as a Simulation Source).
+The output pixel intensity is computed using fixed-point bilinear interpolation.
 
-The Verilog module loads the image using:
-
-```verilog
-$readmemh("input.hex", input_image);
+```text
+Pixel =
+((256-a)(256-b)I00 +
+ a(256-b)I10 +
+(256-a)bI01 +
+ abI11) >> 16
 ```
+
+This computes a weighted average of the four neighboring pixels based on the fractional distances.
 
 ---
 
-## Step 4: Run Behavioral Simulation
+### Stage 4: Pixel Reconstruction
 
-Launch Behavioral Simulation in Vivado.
+The interpolated pixel is written into the output image memory at the corresponding output coordinate.
 
-The pipeline processes every output pixel through the following stages:
+After all output pixels have been processed, the output memory is exported as a HEX file using `$writememh()`.
 
-```
-Coordinate Mapping
-        ↓
-Memory Fetch
-        ↓
-Bilinear Interpolation
-        ↓
-Pixel Reconstruction
-```
 
-After simulation completes, the output image is written using:
 
-```verilog
-$writememh("output.hex", output_image);
-```
+## Fixed-Point Arithmetic
+As we know divide is very expensive in hardware so to make it simple we use for FPGA use we make our project using Fixed point arthmetic.
 
----
+Instead, this design uses an **8-bit fractional fixed-point (Q8) representation**, where the lower 8 bits represent the fractional component.
 
-## Step 5: Convert HEX to Image
 
-Copy **output.hex** to the Python folder and run:
+Multiplication is performed using integer arithmetic, and the result is scaled back by shifting right by 16 bits after interpolation.
 
-```bash
-python hex_to_image.py
-```
+This approach:
 
-The script reconstructs the resized image and generates:
+* Eliminates floating-point hardware.
+* Reduces resource utilization.
+* Improves synthesis efficiency.
+* Maintains high interpolation accuracy for image scaling.
 
-```
-output.hex
-      ↓
-output.png
-```
-
----
 
 ## Complete Workflow
 
